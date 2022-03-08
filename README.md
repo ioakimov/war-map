@@ -69,6 +69,7 @@ TODO Prod (beta):
     Example:
 
     `40.1, 30.8, 1, "dynamicClusterUUID", 37`
+    
     `40.7, 30.1, 0, "point99"`
 
     ---> 37 is number of points in cluster
