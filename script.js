@@ -1,98 +1,4 @@
-$( document ).ready(function() {
-    var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-		  maxZoom: 18,
-		  attribution: '&copy; <a href="//openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
-		});
-		bounds = new L.LatLngBounds(new L.LatLng(44.3614785833,22.0856083513), new L.LatLng(52.3350745713, 40.0807890155));
-		var map = L.map('map', {
-		  center: bounds.getCenter(),
-		  maxBounds: bounds,
-  		  maxBoundsViscosity: 0.75,
-		  zoom: 6,
-		  layers: [tiles]
-		});
-
-		var mcg = L.markerClusterGroup({
-		  chunkedLoading: true,
-		  spiderfyOnMaxZoom: false
-		});
-
-		const HOST = "https://charity-now.com/";
-
-		$.ajax({
-			type: "GET",
-			url: HOST + "data/points.csv",
-			dataType: "text",
-			success: function(data) {processData(data);}
-		});
-	
-		// Let's process the data from the data file
-		function processData(csvStr) {
-			let addressPoints = csvStr.split("\n").map(function(row){return row.split(",");})
-			console.log("AddressPoints:", addressPoints.length);
-			for (var i = 0; i < addressPoints.length; i++) {
-				let a = addressPoints[i];
-				let id = a[2];
-				let title = "Building#" + id;
-				if (!a[0] || !a[1]) {
-					continue;
-				}
-				var marker = L.marker(new L.LatLng(a[0], a[1]), {
-				  title: title
-				});
-				marker.bindPopup((layer)=>{
-					var el = document.createElement('div');
-					el.className = "popup";
-
-					$.getJSON(HOST + "data/" + Math.floor(Math.random() * (3 - 1 + 1) + 1) + "/data.json",function(pointData) {
-						var slideshowContent = '';					
-						for(var i = 0; i < pointData.images.length; i++) {
-							slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
-								'<img src="' + HOST + pointData.images[i] + '" />' +
-								'</div>';
-						}
-						let popupContent =  "<div id='point" + id + "' class='popup'>" +
-							"<a target='_blank' href='point/" + id + "'><h2><font color='red'>" + "Building #" + id + "</font></h2></a>" +
-							"<h3>" + pointData.city + ", " + pointData.street + " "  + pointData.buildingNumber + "</h3>" +
-							"<div class='caption'>" +
-							"<p>Building type: " + pointData.buildingType + "</p>" +
-							"<p>Source of destruction: <font color='red'>" + pointData.destractionSource + "</font></p>" +
-							"</div>" +
-							"<div class='slideshow'>" +
-							slideshowContent +
-							"</div>" +
-							"<div class='cycle'>" +
-							"<a href='#' class='prev'>&laquo; Previous</a>" +
-							"<a href='#' class='next'>Next &raquo;</a>" +
-							"</div>" +
-						"</div>";
-						el.innerHTML = popupContent;
-					});							   
-					return el;
-				});
-				mcg.addLayer(marker);
-			}	  
-			map.addLayer(mcg);
-		}
-
-		$('#map').on('click', '.popup .cycle a', function() {
-			var $slideshow = $('.slideshow'),
-				$newSlide;
-		
-			if ($(this).hasClass('prev')) {
-				$newSlide = $slideshow.find('.active').prev();
-				if ($newSlide.index() < 0) {
-					$newSlide = $('.image').last();
-				}
-			} else {
-				$newSlide = $slideshow.find('.active').next();
-				if ($newSlide.index() < 0) {
-					$newSlide = $('.image').first();
-				}
-			}
-		
-			$slideshow.find('.active').removeClass('active').hide();
-			$newSlide.addClass('active').show();
-			return false;
-		});
-});
+eval((function(s){var a,c,e,i,j,o="",r,t="¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ%@FKQRUWXY^`|~";for(i=0;i<s.length;i++){r=t+s[i][2];a=s[i][1].split("");for(j=a.length - 1;j>=0;j--){s[i][0]=s[i][0].split(r.charAt(j)).join(a[j]);}o+=s[i][0];}return o.replace(//g,"\"");})([["$(ÍÃ§y(ÜÐs×ÐLº¼ç{s}.Ð.osmá{zxy}.pngÊ{m¾18,ötæié:'&Ö; <¿//oØè»áÖright>OStèMapí> c´æors, P¥s &Ö 2012 LINZ'b²=ÀB²(À(44.3614785833,2256083513À(52.3350745713,4007890155)ß¬»×»¼»Ê{c­îìC­îÑÔÔViscosñ:.75,zo:6,lºs:[Ðs]})ð×ªCluØîGro{chunkedLog:!0,spúîfyOnM¾!1céØ ôäçscharñ-nþò/;$.ajax({tÝGETÊurl:Äp¥sòsvÊ³TÝtÞÊsuccess:«³!«Û)ë¯=ÛÅ\\n»((«rþÆrþÅ,É;césoµ.log¼A¯:Ê@Çhßïà@Ìë=@,ú=a[2],âäK#È;ifó&&÷{¬ª×ª(Àó,÷,{â:âª.bdPop(lº=>{¬=Íò§öeEµm­¼¦òRssNameä¹Ê$ìJSON(Ä+øfloor(3*ørandÑ+1)+/³."+
+"jséÊ(«õïÎäÊàÌÎ+='<¦£äimage'+(0===i? ©:%®img srcä'+ô+% /ã>';µt üä<¦ úÂ¹'®a target='_bRnk' h§f/®FÓK #ÈûF/a®h3>±cñ+Ê ±Øè+NumbîÁh3ùcaptié'QK tÝTypeÁpQå of u¤: <Ó±a¤åûpãùWY+ÎÁ¦ùcU'êýY&l P§viousíênÞYNÞ &ríãã>;.nîHTML=üÉ,ÉðÚªX»Úmcg)}(³X$¼#»é¼clickÊ.¹ òU aÊÜ¨e,$W=$¼.W$(thisÃhas·ý?ÏÕý^RØÑ):ÏÕnÞ^firØÑÕ§move·©ÃhúeÑ,¨e.d·©ÃshþÑ,!1ÉÉ;",
+"slideshopointDa classctionointdivre$newSlidactivemarkerfun¤(var ent><dd§ssP¥suilding+¢ta.oundsdataontlenew L.LaClass(.imagepopupayermap($¡w.findaxZoom:a h§f=¶tLng+</£=').HOST+³/.split¼§turn .µngt+id})),f´ colorÇh;i++)docum­¡wC´­(¨e=tiµ()ÑÃindexÑË='§d'>,maxB²½¼.©Ãcopy=L.stÒ<0&&Ï$¼.addLº(csvStr(«){¬ype:ext);i=0;i<.org/titµ®/¦=Sourceributhttp§eton®¿'#'Â{µt a.get</aerfor(¬,mcgity.c(a[0]HOST¢taata[1])Möh.®¦ÂidÁf´®/¹C´­p§vowaquo;='p¥://ÃÈ+'}/{el ±b°penaddeØr.08}ß:b²),up(om[i]inßÆ){õ¸s)+'a¯h2®B°®p>laycµ¡w)}}'>Ù¸",
+""]]));
