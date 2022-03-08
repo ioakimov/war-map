@@ -7,20 +7,37 @@
   <meta name="googlebot" content="noindex, nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
-  <link rel="stylesheet" type="text/css" href="./MarkerCluster.css">
-  <link rel="stylesheet" type="text/css" href="./MarkerCluster.Default.css">
-  <script type="text/javascript" src="./leaflet.markercluster.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+  <link rel="stylesheet" href="./MarkerCluster.css" />
+  <link rel="stylesheet" href="./MarkerCluster.Default.css" />
+  <script src="./leaflet.markercluster.js"></script>
   <script type="text/javascript" src="./realworld.10000.js"></script>
   <script  src="https://code.jquery.com/jquery-3.6.0.min.js"
   	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
   	crossorigin="anonymous">
   </script>
   <style id="compiled-css" type="text/css">
-	  #map {
+	#map {
 		height: 600px;
-      }
+	}
+	.popup {
+		text-align:center;
+		width: 200px;
+		height: 200px;
+	}
+	.popup .slideshow .image        { display:none; }
+	.popup .slideshow .image.active { display:block; }
+	.popup .slideshow img {	width:100%;	}
+	.popup .slideshow .caption {
+		background:#eee;
+		padding:10px;
+	}
+	.popup .cycle {
+		padding:10px 0 20px;
+	}
+	.popup .cycle a.prev { float:left; }
+	.popup .cycle a.next { float:right; }
   </style>
   
 </head>
@@ -49,10 +66,12 @@
 		  spiderfyOnMaxZoom: false
 		});
 
+		const HOST = "https://ioakimov.github.io/war-map/";
+		//const HOST = "https://map.charity-now.com/";
 
 		$.ajax({
 			type: "GET",
-			url: "https://map.charity-now.com/data/points.csv",
+			url: HOST + "data/points.csv",
 			dataType: "text",
 			success: function(data) {processData(data);}
 		});
@@ -62,18 +81,57 @@
 			let addressPoints = csvStr.split("\n").map(function(row){return row.split(",");})
 			console.log("AddressPoints:", addressPoints.length);
 			for (var i = 0; i < addressPoints.length; i++) {
-				var a = addressPoints[i];
-				var title = a[2];
+				let a = addressPoints[i];
+				let id = a[2];
+				let title = "Building#" + id;
 				if (!a[0] || !a[1]) {
 					continue;
 				}
 				var marker = L.marker(new L.LatLng(a[0], a[1]), {
 				  title: title
 				});
-				marker.bindPopup(title);
+				marker.bindPopup((layer)=>{
+					var el = document.createElement('div');
+					el.className = "popup";
+					let pointData = {
+						"title": "Building #1",
+						"region": "#### область",
+						"city": "####",
+						"street": "Правди",
+						"buildingNumber": "31",
+						"buildingType": "School",
+						"destractionSource": "Russian Missle",
+						"renowationPossibility": "No",
+						"images":[
+							"data/1/1.jpg",
+							"data/1/2.jpg",
+							"data/1/3.jpg"
+						],
+						"videos": []
+					};
+					
+					var slideshowContent = '';
+					
+					for(var i = 0; i < pointData.images.length; i++) {
+						slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
+							'<img src="' + HOST + pointData.images[i] + '" />' +
+							'</div>';
+					}
+					
+					var popupContent =  '<div id="point' + id + '" class="popup">' +
+						'<div class="slideshow">' +
+						slideshowContent +
+						'</div>' +
+						'<div class="cycle">' +
+						'<a href="#" class="prev">&laquo; Previous</a>' +
+						'<a href="#" class="next">Next &raquo;</a>' +
+						'</div>'
+					'</div>';
+					el.innerHTML = popupContent;		   
+					return el;
+				});
 				mcg.addLayer(marker);
-			}
-	  
+			}	  
 			map.addLayer(mcg);
 		}
 	})();
