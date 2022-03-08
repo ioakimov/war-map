@@ -17,7 +17,7 @@ $( document ).ready(function() {
 		  spiderfyOnMaxZoom: false
 		});
 
-		const HOST = "https://map.charity-now.com/";
+		const HOST = "https://charity-now.com/";
 
 		$.ajax({
 			type: "GET",
