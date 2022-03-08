@@ -57,21 +57,21 @@
 		  maxZoom: 18,
 		  attribution: '&copy; <a href="//openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
 		});
-
+		bounds = new L.LatLngBounds(new L.LatLng(44.3614785833,22.0856083513), new L.LatLng(52.3350745713, 40.0807890155));
 		var map = L.map('map', {
-		  center: L.latLng(48.38302, 31.18287),
+		  center: bounds.getCenter(),
+		  maxBounds: bounds,
+  		  maxBoundsViscosity: 0.75,
 		  zoom: 6,
 		  layers: [tiles]
 		});
 
 		var mcg = L.markerClusterGroup({
 		  chunkedLoading: true,
-		  //singleMarkerMode: true,
 		  spiderfyOnMaxZoom: false
 		});
 
-		const HOST = "https://ioakimov.github.io/war-map/";
-		//const HOST = "https://map.charity-now.com/";
+		const HOST = "https://map.charity-now.com/";
 
 		$.ajax({
 			type: "GET",
