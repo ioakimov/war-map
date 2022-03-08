@@ -23,16 +23,20 @@
 	}
 	.popup {
 		text-align:center;
-		width: 200px;
-		height: 200px;
+		min-width: 200px;		
+	}
+	.popup p,
+	.popup h2,
+	.popup h3  {
+		margin: 3px 0;		
+	}
+	.popup .caption {
+		background:#eee;
+		padding:3px 0px;
 	}
 	.popup .slideshow .image        { display:none; }
 	.popup .slideshow .image.active { display:block; }
-	.popup .slideshow img {	width:100%;	}
-	.popup .slideshow .caption {
-		background:#eee;
-		padding:10px;
-	}
+	.popup .slideshow img {	width:100%;	min-height: 100px; }
 	.popup .cycle {
 		padding:10px 0 20px;
 	}
@@ -93,47 +97,58 @@
 				marker.bindPopup((layer)=>{
 					var el = document.createElement('div');
 					el.className = "popup";
-					let pointData = {
-						"title": "Building #1",
-						"region": "#### область",
-						"city": "####",
-						"street": "Правди",
-						"buildingNumber": "31",
-						"buildingType": "School",
-						"destractionSource": "Russian Missle",
-						"renowationPossibility": "No",
-						"images":[
-							"data/1/1.jpg",
-							"data/1/2.jpg",
-							"data/1/3.jpg"
-						],
-						"videos": []
-					};
-					
-					var slideshowContent = '';
-					
-					for(var i = 0; i < pointData.images.length; i++) {
-						slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
-							'<img src="' + HOST + pointData.images[i] + '" />' +
-							'</div>';
-					}
-					
-					var popupContent =  '<div id="point' + id + '" class="popup">' +
-						'<div class="slideshow">' +
-						slideshowContent +
-						'</div>' +
-						'<div class="cycle">' +
-						'<a href="#" class="prev">&laquo; Previous</a>' +
-						'<a href="#" class="next">Next &raquo;</a>' +
-						'</div>'
-					'</div>';
-					el.innerHTML = popupContent;		   
+
+					$.getJSON(HOST + "data/" + Math.floor(Math.random() * (3 - 1 + 1) + 1) + "/data.json",function(pointData) {
+						var slideshowContent = '';					
+						for(var i = 0; i < pointData.images.length; i++) {
+							slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
+								'<img src="' + HOST + pointData.images[i] + '" />' +
+								'</div>';
+						}
+						let popupContent =  "<div id='point" + id + "' class='popup'>" +
+							"<a target='_blank' href='point/" + id + "'><h2><font color='red'>" + "Building #" + id + "</font></h2></a>" +
+							"<h3>" + pointData.city + ", " + pointData.street + " "  + pointData.buildingNumber + "</h3>" +
+							"<div class='caption'>" +
+							"<p>Building type: " + pointData.buildingType + "</p>" +
+							"<p>Source of destruction: <font color='red'>" + pointData.destractionSource + "</font></p>" +
+							"</div>" +
+							"<div class='slideshow'>" +
+							slideshowContent +
+							"</div>" +
+							"<div class='cycle'>" +
+							"<a href='#' class='prev'>&laquo; Previous</a>" +
+							"<a href='#' class='next'>Next &raquo;</a>" +
+							"</div>" +
+						"</div>";
+						el.innerHTML = popupContent;
+					});							   
 					return el;
 				});
 				mcg.addLayer(marker);
 			}	  
 			map.addLayer(mcg);
 		}
+
+		$('#map').on('click', '.popup .cycle a', function() {
+			var $slideshow = $('.slideshow'),
+				$newSlide;
+		
+			if ($(this).hasClass('prev')) {
+				$newSlide = $slideshow.find('.active').prev();
+				if ($newSlide.index() < 0) {
+					$newSlide = $('.image').last();
+				}
+			} else {
+				$newSlide = $slideshow.find('.active').next();
+				if ($newSlide.index() < 0) {
+					$newSlide = $('.image').first();
+				}
+			}
+		
+			$slideshow.find('.active').removeClass('active').hide();
+			$newSlide.addClass('active').show();
+			return false;
+		});
 	})();
 	</script>
 

@@ -1,0 +1,16 @@
+{
+	"title": "Building #2",
+	"region": "#### область",
+	"city": "####",
+	"street": "Засядька",
+	"buildingNumber": "74",
+	"buildingType": "Private House",
+	"destractionSource": "Russian Missle",
+	"renowationPossibility": "No",
+	"images":[
+		"data/2/images/1.jpg",
+		"data/2/images/2.jpg",
+		"data/2/images/3.jpg"
+	],
+	"videos": []
+}
